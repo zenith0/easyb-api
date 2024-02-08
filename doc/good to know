@@ -1,0 +1,49 @@
+# Database setup
+If you haven't set up a database or a user yet, you'll need to do so first. Here are the steps to set up a PostgreSQL database and user within your Docker container:
+
+1. **Access the Docker container's shell**: Run the following command to access the shell of your PostgreSQL Docker container:
+
+   ```bash
+   docker exec -it container_id_or_name bash
+   ```
+
+   Replace `container_id_or_name` with the ID or name of your PostgreSQL container.
+
+2. **Log in to PostgreSQL**: Once inside the container's shell, you can log in to the PostgreSQL database server by running the following command:
+
+   ```bash
+   psql -U postgres
+   ```
+
+   This command connects to the PostgreSQL server using the default `postgres` user.
+
+3. **Create a new database**: Inside the PostgreSQL prompt, you can create a new database by running the following SQL command:
+
+   ```sql
+   CREATE DATABASE your_database_name;
+   ```
+
+   Replace `your_database_name` with the desired name for your database.
+
+4. **Create a new user**: You can create a new user and grant them privileges on the database by running the following SQL commands:
+
+   ```sql
+   CREATE USER your_username WITH PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_username;
+   ```
+
+   Replace `your_username` with the desired username and `your_password` with the desired password.
+
+5. **Exit psql**: Once you've created the database and user, you can exit the PostgreSQL prompt by typing:
+
+   ```sql
+   \q
+   ```
+
+6. **Exit the container's shell**: Finally, exit the container's shell by typing:
+
+   ```bash
+   exit
+   ```
+
+Now that you have set up the database and user, you can connect to it using `psql` as mentioned earlier, providing the appropriate database name, username, and password.
