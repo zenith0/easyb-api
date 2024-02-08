@@ -16,7 +16,7 @@ app = Flask(__name__)
 POSTGRES_USER = 'postgres'
 POSTGRES_PW = 'easybankrulez'
 POSTGRES_DB = 'easybank'
-POSTGRES_HOST = 'localhost'
+POSTGRES_HOST = 'postgres'
 POSTGRES_PORT = '5432'
 
 # Define the connection string
@@ -151,4 +151,4 @@ def delete_income(income_id):
 # Similar routes for income items...
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000, host='0.0.0.0')
