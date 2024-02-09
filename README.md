@@ -114,6 +114,51 @@ The base URL for the API is `http://localhost:5000`.
   - HTTP Status Code: `200 OK`
   - Body: JSON containing a message confirming the successful deletion of the income item.
 
+# Accounting API Documentation
+
+## Introduction
+
+The Accounting API allows users to manage accounting data within the financial system. It provides endpoints to retrieve, add, and delete accounting entries.
+
+## Endpoints
+
+### 1. Retrieve Accounting Data
+
+#### GET /accounting
+
+This endpoint retrieves all accounting entries.
+
+### 2. Add Accounting Entry
+
+#### POST /accounting
+
+This endpoint adds a new accounting entry.
+
+### 3. Retrieve Accounting Data by Timeframe
+
+#### GET /accounting/timeframe?start_date=START_DATE&end_date=END_DATE
+
+This endpoint retrieves accounting entries within the specified timeframe.
+
+### 4. Delete All Accounting Data
+
+#### DELETE /accounting
+
+This endpoint deletes all accounting entries. This operation is only available in debug mode.
+
+## Usage
+
+To use the Accounting API, make HTTP requests to the specified endpoints using appropriate methods (GET, POST, DELETE).
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"date":"2024-02-10","transaction_date":"2024-02-10","amount":"100.00","reference":"Test entry 1"}' http://localhost:5000/accounting
+
+curl -X GET http://localhost:5000/accounting
+
+curl -X GET http://localhost:5000/accounting/timeframe?start_date=10.02.2024&end_date=12.02.2024
+
+curl -X DELETE http://localhost:5000/accounting
+``````
 ## Data Models
 
 The API uses two main data models:
