@@ -2,6 +2,18 @@ from sqlalchemy import create_engine, Column, String, Date, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import database_exists, create_database
 import uuid
+from dotenv import load_dotenv
+import os
+
+# Load variables from .env file
+load_dotenv()
+
+# Access environment variables
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PW = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_DB_PORT = os.getenv('POSTGRES_DB_PORT')
 
 Base = declarative_base()
 
@@ -27,5 +39,7 @@ class Accounting(Base):
     amount = Column(Numeric(precision=10, scale=2))
     reference = Column(String)
 
-engine = create_engine('postgresql+psycopg2://postgres:easybankrulez@postgres:5432/easybank')
+db_url = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_HOST}:{POSTGRES_DB_PORT}/{POSTGRES_DB}"
+
+engine = create_engine(db_url)
 Base.metadata.create_all(engine)
