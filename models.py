@@ -27,5 +27,5 @@ class Accounting(Base):
     amount = Column(Numeric(precision=10, scale=2))
     reference = Column(String)
 
-engine = create_engine('postgresql+psycopg2://postgres:easybankrulez@localhost:5432/easybank')
+engine = create_engine('postgresql+psycopg2://postgres:easybankrulez@postgres:5432/easybank')
 Base.metadata.create_all(engine)
