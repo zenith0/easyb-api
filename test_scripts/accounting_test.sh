@@ -45,7 +45,7 @@ main() {
     create_accounting_data
     retrieve_data_for_timeframe
     retrieve_all_entries
-    delete_all_entries
+    # delete_all_entries
 }
 
 # Run the main function

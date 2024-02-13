@@ -96,7 +96,7 @@ main() {
     # Read updated test data
     read_test_data
     # Delete test data
-    delete_test_data
+#    delete_test_data
 }
 
 # Run the main function
