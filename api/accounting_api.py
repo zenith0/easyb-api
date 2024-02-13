@@ -19,8 +19,7 @@ class AccountingAPI:
         } for entry in accounting])
 
     @staticmethod
-    def add_accounting():
-        data = request.json
+    def _add_single_entry(data):
         if not all(key in data for key in ['date', 'transaction_date', 'amount', 'reference']):
             return jsonify({'error': 'Missing required fields'}), 400
 
@@ -28,10 +27,25 @@ class AccountingAPI:
             new_entry = Accounting(**data)
             session.add(new_entry)
             session.commit()
-            return jsonify({'message': 'Entry added successfully', 'id': new_entry.id}), 201
+            return {'id': new_entry.id}
         except Exception as e:
             session.rollback()
-            return jsonify({'error': str(e)}), 500
+            return {'error': str(e)}
+    
+    @staticmethod
+    def add_accounting():
+        data = request.json
+
+        if isinstance(data, list):
+            added_entries = [AccountingAPI._add_single_entry(entry) for entry in data]
+            added_entries = [entry for entry in added_entries if 'error' not in entry]
+            if added_entries:
+                ids = [entry['id'] for entry in added_entries]
+                return jsonify({'message': 'Entries added successfully', 'added_entries': ids}), 201
+            else:
+                return jsonify({'error': 'All entries failed to add'}), 500
+        else:
+            return jsonify(AccountingAPI._add_single_entry(data)), 201
         
 
     @staticmethod
@@ -43,7 +57,7 @@ class AccountingAPI:
             return jsonify({'error': 'Invalid date format. Please use DD.MM.YYYY'}), 400
 
         accounting = session.query(Accounting).filter(
-            Accounting.accounting_date.between(start_date, end_date)
+            Accounting.transaction_date.between(start_date, end_date)
         ).all()
 
         return jsonify([{
