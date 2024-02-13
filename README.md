@@ -159,6 +159,10 @@ curl -X GET http://localhost:5000/accounting/timeframe?start_date=10.02.2024&end
 
 curl -X DELETE http://localhost:5000/accounting
 ``````
+## Duplicates
+The sender does not need to care about duplicates. The API server checks if a received object is already stored and wont store it, but return 200.
+To identify duplicates the combination of date + amount + reference is compared. This is the assumption for real banking data.
+
 ## Data Models
 
 The API uses two main data models:

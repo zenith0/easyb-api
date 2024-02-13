@@ -24,13 +24,26 @@ class AccountingAPI:
             return jsonify({'error': 'Missing required fields'}), 400
 
         try:
+        # Check if an entry with the same reference, date, and amount already exists
+            existing_entry = session.query(Accounting).filter_by(
+                reference=data['reference'],
+                date=data['date'],
+                amount=data['amount']
+            ).first()
+
+            if existing_entry:
+                # Entry already exists, return its ID
+                return {'id': existing_entry.id, 'message': 'Entry already exists'}
+
+            # Entry doesn't exist, add a new one
             new_entry = Accounting(**data)
             session.add(new_entry)
             session.commit()
-            return {'id': new_entry.id}
+            return {'id': new_entry.id, 'message': 'Entry added successfully'}
+
         except Exception as e:
             session.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)}, 500
     
     @staticmethod
     def add_accounting():
