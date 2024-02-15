@@ -31,19 +31,22 @@ class AccountingAPI:
     @staticmethod
     def _add_single_entry(data):
         if not all(key in data for key in ['date', 'transaction_date', 'amount', 'reference']):
-            logger.debug("Missing field for entry: %s", data)
+            logger.error("Missing field for entry: %s", data)
             return jsonify({'error': 'Missing required fields'}), 400
 
         try:
         # Check if an entry with the same reference, date, and amount already exists
             date_str = data['date']
             date_obj = datetime.strptime(date_str, DATE_FORMAT)
-            formatted_date = date_obj.strftime(DATE_FORMAT)
-            data['date'] = formatted_date
+            data['date']=date_obj
+            date_str = data['transaction_date']
+            date_obj = datetime.strptime(date_str, DATE_FORMAT)
+            data['transaction_date']=date_obj
             existing_entry = session.query(Accounting).filter_by(
                 reference=data['reference'],
                 date=data['date'],
-                amount=data['amount']
+                amount=data['amount'],
+                transaction_date=data['transaction_date']
             ).first()
 
             if existing_entry:
@@ -83,14 +86,14 @@ class AccountingAPI:
     def get_accounting_by_timeframe(start_date, end_date):
         try:
             # validate format
-            datetime.strptime(start_date, DATE_FORMAT)
-            datetime.strptime(end_date, DATE_FORMAT)
-            logger.debug("Get data by timeframe start: %s, end: %s", start_date, end_date)
+            start = datetime.strptime(start_date, DATE_FORMAT)
+            end = datetime.strptime(end_date, DATE_FORMAT)
+            logger.debug("Get data by timeframe start: %s, end: %s", start, end)
         except ValueError:
             return jsonify({'error': 'Invalid date format. Please use DD-MM-YYYY'}), 400
 
         accounting = session.query(Accounting).filter(
-            Accounting.transaction_date.between(start_date, end_date)
+            Accounting.transaction_date.between(start, end)
         ).all()
 
         return jsonify([{

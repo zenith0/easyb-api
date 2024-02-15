@@ -37,8 +37,8 @@ class Income(Base):
 class Accounting(Base):
     __tablename__ = 'accounting'
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())[:8])
-    date = Column(Date, default=lambda: datetime.strptime('01-01-1970', DATE_FORMAT).date())
-    transaction_date = Column(Date, default=lambda: datetime.strptime('01-01-1970', DATE_FORMAT).date())
+    date = Column(Date)
+    transaction_date = Column(Date)
     amount = Column(Numeric(precision=10, scale=2))
     reference = Column(String)
 
