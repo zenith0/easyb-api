@@ -60,6 +60,7 @@ class AccountingAPI:
 
         except Exception as e:
             session.rollback()
+            logger.error(str(e))
             return {'error': str(e)}, 500
     
     @staticmethod
