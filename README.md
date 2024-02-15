@@ -151,14 +151,17 @@ This endpoint deletes all accounting entries. This operation is only available i
 To use the Accounting API, make HTTP requests to the specified endpoints using appropriate methods (GET, POST, DELETE).
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"date":"2024-02-10","transaction_date":"2024-02-10","amount":"100.00","reference":"Test entry 1"}' http://localhost:5000/accounting
+curl -X POST -H "Content-Type: application/json" -d '{"date":"02-10-2024","transaction_date":"02-10-2024","amount":"100.00","reference":"Test entry 1"}' http://localhost:5000/accounting
 
 curl -X GET http://localhost:5000/accounting
 
-curl -X GET http://localhost:5000/accounting/timeframe?start_date=10.02.2024&end_date=12.02.2024
+curl -X GET http://localhost:5000/accounting/timeframe?start_date=10-02-2024&end_date=12-02-2024
 
 curl -X DELETE http://localhost:5000/accounting
 ``````
+## Dates
+Please note that the dateformat should be 'dd-mm-yyyy'. If the format differs an error is returned "invalid format". Though it can happen that 201 is returned, even if dd and mm position is swapped accidentially. 
+
 ## Duplicates
 The sender does not need to care about duplicates. The API server checks if a received object is already stored and wont store it, but return 200.
 To identify duplicates the combination of date + amount + reference is compared. This is the assumption for real banking data.
