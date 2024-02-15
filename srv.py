@@ -1,9 +1,11 @@
 from flask import Flask, request
+from flask_cors import CORS
 from api.expense_api import ExpenseAPI
 from api.income_api import IncomeAPI
 from api.accounting_api import AccountingAPI
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Routes for expenses
 @app.route('/expenses', methods=['GET'])
