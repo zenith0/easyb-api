@@ -5,16 +5,16 @@ create_accounting_data() {
     echo "Creating accounting data..."
     # Create accounting data
     curl -X POST -H "Content-Type: application/json" -d '{
-        "date": "2024-02-10",
-        "transaction_date": "2024-02-10",
+        "date": "03-11-2024",
+        "transaction_date": "02-10-2024",
         "amount": "100.00",
         "reference": "Test entry 1"
     }' http://localhost:5000/accounting
     echo "Accounting entry 1 created"
 
     curl -X POST -H "Content-Type: application/json" -d '{
-        "date": "2024-02-11",
-        "transaction_date": "2024-02-11",
+        "date": "02-11-2024",
+        "transaction_date": "02-11-2024",
         "amount": "150.00",
         "reference": "Test entry 2"
     }' http://localhost:5000/accounting
@@ -25,7 +25,7 @@ create_accounting_data() {
 retrieve_data_for_timeframe() {
     echo "Retrieving accounting data for timeframe..."
     # Example: Retrieve data for the month of February 2024
-    curl http://localhost:5000/accounting/timeframe?start_date=2024-02-01\&end_date=2024-02-29
+    curl http://localhost:5000/accounting/timeframe?start_date=02-11-2024\&end_date=02-11-2024
 }
 
 # Function to retrieve all accounting entries
@@ -45,7 +45,7 @@ main() {
     create_accounting_data
     retrieve_data_for_timeframe
     retrieve_all_entries
-    # delete_all_entries
+    delete_all_entries
 }
 
 # Run the main function
