@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, String, Date, Numeric
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_utils import database_exists, create_database
+from datetime import datetime
 import uuid
 from dotenv import load_dotenv
 import os
@@ -14,6 +14,9 @@ POSTGRES_PW = os.getenv('POSTGRES_PASSWORD')
 POSTGRES_DB = os.getenv('POSTGRES_DB')
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_DB_PORT = os.getenv('POSTGRES_DB_PORT')
+
+DATE_FORMAT = '%d-%m-%Y'
+
 
 Base = declarative_base()
 
@@ -34,8 +37,8 @@ class Income(Base):
 class Accounting(Base):
     __tablename__ = 'accounting'
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())[:8])
-    date = Column(Date)
-    transaction_date = Column(Date)
+    date = Column(Date, default=lambda: datetime.strptime('01-01-1970', DATE_FORMAT).date())
+    transaction_date = Column(Date, default=lambda: datetime.strptime('01-01-1970', DATE_FORMAT).date())
     amount = Column(Numeric(precision=10, scale=2))
     reference = Column(String)
 
