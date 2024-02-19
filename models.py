@@ -22,14 +22,14 @@ Base = declarative_base()
 
 class Expense(Base):
     __tablename__ = 'expenses'
-    id = Column(String, primary_key=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())[:8])
     reference = Column(String)
     amount = Column(Numeric(precision=10, scale=2))
     matcher = Column(String)
 
 class Income(Base):
     __tablename__ = 'income'
-    id = Column(String, primary_key=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())[:8])
     reference = Column(String)
     amount = Column(Numeric(precision=10, scale=2))
     matcher = Column(String)
