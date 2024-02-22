@@ -64,6 +64,17 @@ def add_accounting():
 def delete_all_accounting():
     return AccountingAPI.delete_all_accounting(enabled=True)
 
+@app.route('/accounting/total', methods=['POST'])
+def add_total_balance():
+    return AccountingAPI.add_total_balance()
+
+@app.route('/accounting/total', methods=['GET'])
+def get_total_balance():
+    return AccountingAPI.get_total_balance()
+
+@app.route('/accounting/total/current', methods=['GET'])
+def get_current_total_balance():
+    return AccountingAPI.get_current_total_balance()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')

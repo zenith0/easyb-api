@@ -42,6 +42,12 @@ class Accounting(Base):
     amount = Column(Numeric(precision=10, scale=2))
     reference = Column(String)
 
+class AccountingTotal(Base):
+    __tablename__ = 'accounting_total'
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4())[:8])
+    date = Column(Date)
+    total = Column(Numeric(precision=10, scale=2))
+    
 db_url = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PW}@{POSTGRES_HOST}:{POSTGRES_DB_PORT}/{POSTGRES_DB}"
 
 engine = create_engine(db_url)

@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from sqlalchemy.orm import sessionmaker
-from models import Accounting, engine, DATE_FORMAT
-
+from models import Accounting, AccountingTotal, engine, DATE_FORMAT
+from sqlalchemy import desc
 from datetime import datetime
 import logging
 
@@ -103,12 +103,64 @@ class AccountingAPI:
             'amount': entry.amount,
             'reference': entry.reference
         } for entry in accounting])
+    
+    @staticmethod
+    def add_total_balance():
+        data = request.json
+        if not data:
+            return jsonify({'error': 'This endpoint is only available in debug mode'}), 403
+
+        try:
+            date_str = data['date']
+            date_obj = datetime.strptime(date_str, DATE_FORMAT)
+            data['date']=date_obj
+            total = data['total']
+            existing_entry = session.query(AccountingTotal).filter_by(
+                date=data['date'],
+            ).first()
+
+            if existing_entry:
+                logger.debug("Updating existing total entry for ", date_str)
+                setattr(existing_entry, 'total', total)
+                session.commit()
+                return jsonify({'message': 'Totals updated successfully'}), 200
+            else:
+                # Entry doesn't exist, add a new one
+                new_entry = AccountingTotal(**data)
+                session.add(new_entry)
+                session.commit()
+                logger.debug("added new item: %s", new_entry)
+                return {'id': new_entry.id, 'message': 'Entry added successfully'}
+
+        except Exception as e:
+            session.rollback()
+            logger.error(str(e))
+            return {'error': str(e)}, 500
+
+    @staticmethod    
+    def get_total_balance():
+        totals = session.query(AccountingTotal).all()
+        return jsonify([{
+            'id': total.id,
+            'date': total.date.strftime(DATE_FORMAT),
+            'total': total.total,
+        }for total in totals]) 
+    
+    @staticmethod    
+    def get_current_total_balance():
+        last_accounting = session.query(AccountingTotal).order_by(desc(AccountingTotal.date)).first()
+        return jsonify({
+            'id': last_accounting.id,
+            'date': last_accounting.date.strftime(DATE_FORMAT),
+            'total': last_accounting.total,
+        })
+
 
     # only available in debug mode    
     @staticmethod
     def delete_all_accounting(enabled=False):
         if not enabled:
-            return jsonify({'error': 'This endpoint is only available in debug mode'}), 403
+            return jsonify({'error': 'No data given'}), 400
 
         try:
             session.query(Accounting).delete()
