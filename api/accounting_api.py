@@ -108,20 +108,19 @@ class AccountingAPI:
     def add_total_balance():
         data = request.json
         if not data:
-            return jsonify({'error': 'This endpoint is only available in debug mode'}), 403
+            return jsonify({'error': 'Request must not be empty, expected {''total'': 12345 }'}), 400
 
         try:
             date_str = data['date']
             date_obj = datetime.strptime(date_str, DATE_FORMAT)
             data['date']=date_obj
-            total = data['total']
+            data['total'] = data['total'].replace(",", ".")
             existing_entry = session.query(AccountingTotal).filter_by(
                 date=data['date'],
             ).first()
 
             if existing_entry:
-                logger.debug("Updating existing total entry for ", date_str)
-                setattr(existing_entry, 'total', total)
+                setattr(existing_entry, 'total', data['total'])
                 session.commit()
                 return jsonify({'message': 'Totals updated successfully'}), 200
             else:
