@@ -17,6 +17,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 class AccountingAPI:
+    # TODO: remove? Generally this shouldnt be used in reality
     @staticmethod
     def get_accounting():
         accounting = session.query(Accounting).all()
@@ -85,25 +86,41 @@ class AccountingAPI:
     @staticmethod
     def get_accounting_by_timeframe(start_date, end_date):
         try:
-            # validate format
+            # Validate format
             start = datetime.strptime(start_date, DATE_FORMAT)
             end = datetime.strptime(end_date, DATE_FORMAT)
             logger.debug("Get data by timeframe start: %s, end: %s", start, end)
         except ValueError:
-            return jsonify({'error': 'Invalid date format. Please use DD-MM-YYYY'}), 400
+            return jsonify({'error': 'Invalid date format. Please use DD-MM-YYYY'}), 400    
 
         accounting = session.query(Accounting).filter(
             Accounting.transaction_date.between(start, end)
         ).all()
 
-        return jsonify([{
-            'id': entry.id,
-            'date': entry.date.strftime(DATE_FORMAT),
-            'transaction_date': entry.transaction_date.strftime(DATE_FORMAT),
-            'amount': entry.amount,
-            'reference': entry.reference
-        } for entry in accounting])
-    
+        total_expenses = 0
+        total_income = 0
+        entries = []
+        for entry in accounting:
+            amount = entry.amount
+            if amount < 0:
+                total_expenses += amount
+            elif amount > 0:
+                total_income += amount
+
+            entries.append({
+                'id': entry.id,
+                'date': entry.date.strftime(DATE_FORMAT),
+                'transaction_date': entry.transaction_date.strftime(DATE_FORMAT),
+                'amount': amount,
+                'reference': entry.reference
+            })
+
+        return jsonify({
+            'entries': entries,
+            'total_expenses': total_expenses,
+            'total_income': total_income
+        })
+
     @staticmethod
     def add_total_balance():
         data = request.json
