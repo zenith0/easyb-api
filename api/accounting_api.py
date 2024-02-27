@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from sqlalchemy.orm import sessionmaker
-from models import Accounting, AccountingTotal, engine, DATE_FORMAT
+from models import Accounting, Category, AccountingTotal, engine, DATE_FORMAT
 from sqlalchemy import desc
 from datetime import datetime
 import logging
@@ -185,3 +185,20 @@ class AccountingAPI:
         except Exception as e:
             session.rollback()
             return jsonify({'error': str(e)}), 500
+        
+    def update_item_category():
+        item_id = request.json.get('item_id')
+        new_category_id = request.json.get('new_category_id')
+        with Session() as session:
+            item = session.query(Accounting).filter_by(id=item_id).first()
+            if item:
+                # Check if the new category exists
+                new_category = session.query(Category).filter_by(id=new_category_id).first()
+                if new_category:
+                    item.category_id = new_category_id
+                    session.commit()
+                    return jsonify({'message': f'Category updated successfully for item {item_id}'}), 200
+                else:
+                    return jsonify({'message': f'New category with ID "{new_category_id}" not found'}), 404
+            else:
+                return jsonify({'message': f'Item with ID "{item_id}" not found'}), 404

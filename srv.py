@@ -77,6 +77,10 @@ def get_total_balance():
 def get_current_total_balance():
     return AccountingAPI.get_current_total_balance()
 
+@app.route('/accounting/category', methods=['PUT'])
+def update_item_category():
+    return AccountingAPI.update_item_category()
+
 @app.route('/categories', methods=['GET'])
 def get_categories():
     return CategoryApi.get_categories()

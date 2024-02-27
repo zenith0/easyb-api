@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from sqlalchemy.orm import sessionmaker
-from models import Category, Accounting, engine
+from models import Category, Expense, Income, Accounting, engine
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -26,12 +26,19 @@ class CategoryApi:
 
 
     def get_categories_with_items():
+        categories = []
         with Session() as session:
             categories_with_items = {}
             categories = session.query(Category).all()
             for category in categories:
-                items_in_category = session.query(Accounting).filter_by(category_id=category.id).all()
-                categories_with_items[category.name] = [item.id for item in items_in_category]
+                acc_items_in_category = session.query(Accounting).filter_by(category_id=category.id).all()
+                exp_items_in_category = session.query(Expense).filter_by(category_id=category.id).all()
+                inc_items_in_category = session.query(Income).filter_by(category_id=category.id).all()
+                
+                categories_with_items[category.name] = {"acc_items": [item.id for item in acc_items_in_category],
+                                                        "exp_items": [item.id for item in exp_items_in_category],
+                                                        "inc_items": [item.id for item in inc_items_in_category]}
+
             return jsonify(categories_with_items)
     
     def update_category():
