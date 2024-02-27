@@ -28,20 +28,20 @@ class CategoryApi:
     def get_categories_with_items():
         categories = []
         with Session() as session:
-            categories_with_items = {}
             categories = session.query(Category).all()
+            categories_with_items = []
             for category in categories:
                 acc_items_in_category = session.query(Accounting).filter_by(category_id=category.id).all()
                 exp_items_in_category = session.query(Expense).filter_by(category_id=category.id).all()
                 inc_items_in_category = session.query(Income).filter_by(category_id=category.id).all()
                 
-                categories_with_item = {"id": category.id,
-                                        "name": category.name,
-                                        "acc_items": [item.id for item in acc_items_in_category],
-                                        "exp_items": [item.id for item in exp_items_in_category],
-                                        "inc_items": [item.id for item in inc_items_in_category]}
+                categories_with_items.append({"id": category.id,
+                                            "name": category.name,
+                                            "acc_items": [item.id for item in acc_items_in_category],
+                                            "exp_items": [item.id for item in exp_items_in_category],
+                                            "inc_items": [item.id for item in inc_items_in_category]})
 
-            return jsonify(categories_with_item )
+            return jsonify(categories_with_items)
     
     def update_category():
         category_id = request.json.get('id')
