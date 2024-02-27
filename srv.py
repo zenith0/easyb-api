@@ -3,6 +3,7 @@ from flask_cors import CORS
 from api.expense_api import ExpenseAPI
 from api.income_api import IncomeAPI
 from api.accounting_api import AccountingAPI
+from api.category_api import CategoryApi
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -75,6 +76,26 @@ def get_total_balance():
 @app.route('/accounting/total/current', methods=['GET'])
 def get_current_total_balance():
     return AccountingAPI.get_current_total_balance()
+
+@app.route('/categories', methods=['GET'])
+def get_categories():
+    return CategoryApi.get_categories()
+
+@app.route('/categories_with_items', methods=['GET'])
+def get_categories_with_items():
+    return CategoryApi.get_categories_with_items()
+
+@app.route('/category', methods=['POST'])
+def create_category():
+    return CategoryApi.create_category()
+
+@app.route('/category', methods=['PUT'])
+def update_category():
+    return CategoryApi.update_category()
+
+@app.route('/category', methods=['DELETE'])
+def delete_category():
+    return CategoryApi.delete_category()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
