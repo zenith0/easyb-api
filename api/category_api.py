@@ -14,7 +14,7 @@ class CategoryApi:
                 new_category = Category(name=category_name)
                 session.add(new_category)
                 session.commit()
-                return jsonify({'message': f'Category "{category_name}" created successfully'}), 201
+                return jsonify({'message': f'Category "{category_name}" created successfully', 'id': new_category.id, 'name': category_name}), 201
             else:
                 return jsonify({'message': f'Category "{category_name}" already exists'}), 400
     
