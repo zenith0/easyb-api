@@ -7,7 +7,7 @@ session = Session()
 
 class CategoryApi:
     def create_category():
-        category_name = request.json.get('category')
+        category_name = request.json.get('name')
         with Session() as session:
             category_exists = session.query(Category).filter_by(name=category_name).first()
             if not category_exists:

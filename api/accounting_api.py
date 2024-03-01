@@ -26,7 +26,8 @@ class AccountingAPI:
             'date': entry.date.strftime(DATE_FORMAT),
             'transaction_date': entry.transaction_date.strftime(DATE_FORMAT),
             'amount': entry.amount,
-            'reference': entry.reference
+            'reference': entry.reference,
+            'category_id': entry.category_id
         } for entry in accounting])
 
     @staticmethod
@@ -112,7 +113,8 @@ class AccountingAPI:
                 'date': entry.date.strftime(DATE_FORMAT),
                 'transaction_date': entry.transaction_date.strftime(DATE_FORMAT),
                 'amount': amount,
-                'reference': entry.reference
+                'reference': entry.reference,
+                'category_id': entry.category_id
             })
 
         return jsonify({
